@@ -19,6 +19,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
+    private Item curretnItems;
         
     /**
      * Create the game and initialise its internal map.
@@ -35,13 +36,20 @@ public class Game
     private void createRooms()
     {
         Room outside, theater, pub, lab, office;
-      
+        Item oItem, tItem, pItem, lItem, ofItem;
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        
+        oItem = new Item("A Bench to sit on and relax",0);
+        tItem = new Item("A projector to watch movies on",500); 
+        pItem = new Item("Drinks to have like soda", 100);
+        lItem = new Item("A computer to browser the internet",800); 
+        ofItem = new Item("A stapler to staple papers together",400);
+        
+        outside = new Room("outside the main entrance of the university", oItem);
+        theater = new Room("in a lecture theater", tItem);
+        pub = new Room("in the campus pub", pItem);
+        lab = new Room("in a computing lab", lItem);
+        office = new Room("in the computing admin office", ofItem);
         
         // initialise room exits
         outside.setExit("east", theater);
