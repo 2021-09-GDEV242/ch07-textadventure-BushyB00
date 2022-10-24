@@ -19,7 +19,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-    private Item curretnItems;
+    private Room prevRoom;
         
     /**
      * Create the game and initialise its internal map.
@@ -72,6 +72,8 @@ public class Game
         office.setExit("west", lab);
 
         currentRoom = outside;  // start game outside
+        
+        prevRoom = null; 
     }
 
     /**
@@ -140,6 +142,10 @@ public class Game
             case EAT:
                 eatSomething(); 
                 break; 
+            
+            case BACK:
+                backRoom(); 
+                break;
                 
         }
         return wantToQuit;
@@ -182,6 +188,7 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
+            prevRoom = currentRoom;
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
         }
@@ -225,4 +232,14 @@ public class Game
         }
         return room; 
     }
+    
+     /** 
+     * Goes back to the previous room with description
+     */
+    private void backRoom()
+    {
+        currentRoom = prevRoom;
+        System.out.println(currentRoom.getLongDescription());
+    }
+    
 }
