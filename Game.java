@@ -19,7 +19,8 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-    private Room prevRoom;
+    private Room roomStack[];
+    private int top;
         
     /**
      * Create the game and initialise its internal map.
@@ -28,6 +29,8 @@ public class Game
     {
         createRooms();
         parser = new Parser();
+        roomStack = new Room[500];
+        top=-1;
     }
 
     /**
@@ -73,7 +76,6 @@ public class Game
 
         currentRoom = outside;  // start game outside
         
-        prevRoom = null; 
     }
 
     /**
@@ -188,7 +190,7 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
-            prevRoom = currentRoom;
+            push(currentRoom);
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
         }
@@ -238,8 +240,41 @@ public class Game
      */
     private void backRoom()
     {
-        currentRoom = prevRoom;
-        System.out.println(currentRoom.getLongDescription());
+        currentRoom = pop();
+        if(currentRoom != null)
+        {
+            System.out.println(currentRoom.getLongDescription());
+        }   
+    }
+    
+     /** 
+     * Adds room to room stack
+     */
+    private void push(Room room)
+    {
+        if(top == roomStack.length-1)
+        {
+            System.out.println("Room stack is full"); 
+        }
+        else 
+        {
+            roomStack[++top] = room; 
+        }
+    }
+    
+    /** 
+    * Removes rooms that are on top of the stack
+    */
+    private Room pop()
+    {
+        if(top<0){
+            System.out.println("Sorry you are outside there are no rooms to go back too!");
+            return null;
+        }
+        else 
+        {
+            return roomStack[top--];
+        }
     }
     
 }
