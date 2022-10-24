@@ -8,7 +8,7 @@
 public class Item
 {
     // instance variables 
-    private int itemW; 
+    private double itemW; 
     private String itemDes; 
 
     /**
@@ -19,14 +19,14 @@ public class Item
     {
         // initialise instance variables
         itemDes = "";
-        itemW = 0; 
+        itemW = 0.0; 
     }
 
     /**
      * Constructor for objects of class Item, 
      * sets the instance variables with parameteres. 
      */
-    public Item(String description, int weight)
+    public Item(String description, double weight)
     {
         // put your code here
         itemDes = description; 

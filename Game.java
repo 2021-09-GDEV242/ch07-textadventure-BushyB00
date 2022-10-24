@@ -36,20 +36,26 @@ public class Game
     private void createRooms()
     {
         Room outside, theater, pub, lab, office;
-        Item oItem, tItem, pItem, lItem, ofItem;
+        
         // create the rooms
+        Item oItem[] ={ new Item("Nothing", 0), new Item("Plants", 200), new Item("Bench", 1000)};
+        Item tItem[] ={ new Item("Projector", 1300), new Item("Chairs", 600), new Item("Tables", 1200)};
+        Item pItem[] ={ new Item("Soda", 400), new Item("Jukebox", 700)};
+        Item lItem[] ={ new Item("Computers", 1500), new Item("Chairs", 2000)};
+        Item ofItem[] ={ new Item("Phone", 100), new Item("Table", 200), new Item("Chairs", 300)};
+
         
-        oItem = new Item("A Bench to sit on and relax",0);
-        tItem = new Item("A projector to watch movies on",500); 
-        pItem = new Item("Drinks to have like soda", 100);
-        lItem = new Item("A computer to browser the internet",800); 
-        ofItem = new Item("A stapler to staple papers together",400);
+        outside = new Room("outside the main entrance of the university");
+        theater = new Room("in a lecture theater");
+        pub = new Room("in the campus pub");
+        lab = new Room("in a computing lab");
+        office = new Room("in the computing admin office");
         
-        outside = new Room("outside the main entrance of the university", oItem);
-        theater = new Room("in a lecture theater", tItem);
-        pub = new Room("in the campus pub", pItem);
-        lab = new Room("in a computing lab", lItem);
-        office = new Room("in the computing admin office", ofItem);
+        outside = addItemsToRoom(outside, oItem);
+        theater = addItemsToRoom(theater, tItem);
+        pub = addItemsToRoom(pub, pItem);
+        lab = addItemsToRoom(lab, lItem);
+        office = addItemsToRoom(office, ofItem);
         
         // initialise room exits
         outside.setExit("east", theater);
@@ -206,5 +212,17 @@ public class Game
     private void eatSomething()
     {
         System.out.println("You have eaten and not hungry anymore.");
+    }
+    
+    /** 
+     * Adds the array of items to a room and returns the room. 
+     */
+    private Room addItemsToRoom (Room room, Item items[])
+    {
+        for(int i = 0; i < items.length; i++)
+        {
+            room.addItem(items[i]);
+        }
+        return room; 
     }
 }
