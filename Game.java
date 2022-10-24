@@ -11,8 +11,8 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Evan Skupien 
+ * @version 2022.10.23
  */
 
 public class Game 
@@ -120,8 +120,12 @@ public class Game
                 break;
                 
             case LOOK:
-                look();
+                lookAround();
                 break;
+                
+            case EAT:
+                eatSomething(); 
+                break; 
                 
         }
         return wantToQuit;
@@ -186,8 +190,13 @@ public class Game
     }
     
     // prints the room decrption
-    private void look()
+    private void lookAround()
     {
         System.out.println(currentRoom.getLongDescription());
+    }
+    
+    private void eatSomething()
+    {
+        System.out.println("You have eaten and not hungry anymore.");
     }
 }
