@@ -1,0 +1,6 @@
+Intermediate:
+  added items to each room and the ability for the player to hold the items. Added the back command to go back to a certain room and repeativly do it. Lastly 
+  added player class that holds the players information and gives them the ability to pick up and hold items
+  
+  Advanced: 
+  Added a time limit that counts down till the game is over and a transporter that will randomly transport the player to a diffrent room.
