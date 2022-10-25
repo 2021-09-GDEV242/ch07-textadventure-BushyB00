@@ -10,6 +10,7 @@ public class Item
     // instance variables 
     private double itemW; 
     private String itemDes; 
+    private String name; 
 
     /**
      * Constructor for objects of class Item
@@ -18,6 +19,7 @@ public class Item
     public Item()
     {
         // initialise instance variables
+        name= "";
         itemDes = "";
         itemW = 0.0; 
     }
@@ -26,9 +28,10 @@ public class Item
      * Constructor for objects of class Item, 
      * sets the instance variables with parameteres. 
      */
-    public Item(String description, double weight)
+    public Item(String name, String description, double weight)
     {
         // put your code here
+        this.name = name;
         itemDes = description; 
         itemW = weight;
     }
@@ -39,9 +42,26 @@ public class Item
      */
     public String itemDescritption()
     {
-        String itemString = "Item Description: ";
+        String itemString = "Name: " + this.name;
+        itemString +="Item Description: ";
         itemString += this.itemDes +"\n";
         itemString +="Items Weight: "+this.itemW; 
         return itemString; 
     }
+    //Gets the items name 
+    public String getItemName()
+    {
+        return name; 
+    }
+    
+    // retunrs the getter method to the item description 
+     public String getDesOfItem()
+     {
+         return itemDes;
+     }
+     // add tHe getter method to the items weight
+     public double getW()
+     {
+         return itemW;
+     }
 }

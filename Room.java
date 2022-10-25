@@ -29,6 +29,15 @@ public class Room
      * "an open court yard".
      * @param description The room's description.
      */
+    
+    public ArrayList<Item> getRoomItems()
+    {
+        return roomItem; 
+    }
+    
+    /**
+     * 
+     */
     public Room(String description) 
     {
         this.description = description;
@@ -112,5 +121,35 @@ public class Room
     {
         roomItem.add(item);
     }
+    
+    /**
+     * To get an item that is in a room if it is in the room
+     */
+    public Item getItem(String itemName)
+    {
+        for (int i = 0; i < roomItem.size(); i++)
+        {
+            if (roomItem.get(i).getItemName().equalsIgnoreCase (itemName))
+            {
+                return roomItem.get(i);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * To remove an item that the player has picked up 
+     */
+    public void removeItem (Item item)
+    {
+        for (int i = 0; i < roomItem.size(); i++)
+        {
+            if (roomItem.get(i) == item)
+            {
+                roomItem.remove (item); break;
+            }
+        }
+    }
+    
 }
 

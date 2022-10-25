@@ -67,6 +67,9 @@ public class CommandWords
         System.out.println();
     }
     
+    /**
+     * To print all the commands used in the game
+     */
         public String getCommandList()
     {
         String returnString = ""; 

@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -21,6 +23,12 @@ public class Game
     private Room currentRoom;
     private Room roomStack[];
     private int top;
+    private Scanner reader; 
+    private Player player; 
+    private int counter = 0;
+    private int randomRoom; 
+    private String directions[] = {"north","south","east","west"};
+    ArrayList<Room> array_Rooms = new ArrayList<Room>();
         
     /**
      * Create the game and initialise its internal map.
@@ -31,28 +39,50 @@ public class Game
         parser = new Parser();
         roomStack = new Room[500];
         top=-1;
+        player = new Player();
+        reader = new Scanner(System.in); 
+    }
+    
+    /**
+     * Create the player and gives them a name.
+     */
+    public void createPlayer()
+    {
+        System.out.println("Enter your players name: ");
+        String name = reader.nextLine(); 
+        player.setPlayerName(name);
+        createRooms(); 
+        System.out.println("Enter max weight the player can carry: ");
+        int w = reader.nextInt(); 
+        player.setMaxW(w); 
     }
 
     /**
-     * Create all the rooms and link their exits together.
+     * Create all the rooms and link their exits together. Adds transporter so player can be transported to diffrent rooms randomly. 
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room outside, theater, pub, lab, office, transporter;
         
         // create the rooms
-        Item oItem[] ={ new Item("Nothing", 0), new Item("Plants", 200), new Item("Bench", 1000)};
-        Item tItem[] ={ new Item("Projector", 1300), new Item("Chairs", 600), new Item("Tables", 1200)};
-        Item pItem[] ={ new Item("Soda", 400), new Item("Jukebox", 700)};
-        Item lItem[] ={ new Item("Computers", 1500), new Item("Chairs", 2000)};
-        Item ofItem[] ={ new Item("Phone", 100), new Item("Table", 200), new Item("Chairs", 300)};
-
+        Item oItem[] = { new Item("Nothing","It is a open area", 0), new Item("Plants", "The open area contains" + " plants", 200), new Item ("Benches", "The open area" + "contains benches to"+ " sit", 1500)}; 
+        Item tItem[] = { new Item("Projector","Is used to project the " + "content in visual form", 2000), new Item("Chairs", "To sit in the theater", 5000), new Item("Table","To place items", 200) }; 
+        Item pItem[] = { new Item("Soda","Beverages to drink", 300), new Item ("Juxbox", "To get relaxed by listinning"+ " to the music", 500) };
+        Item lItem[] = { new Item("Laptops","To work on the systems.",1200), new Item("CD/DVD", "To store information",200) }; 
+        Item ofItem[] = { new Item("Telephone","To communicate", 100), new Item("Pens", "To write the information",200), new Item("Magazines", "School Magazines", 500) };
         
         outside = new Room("outside the main entrance of the university");
         theater = new Room("in a lecture theater");
         pub = new Room("in the campus pub");
         lab = new Room("in a computing lab");
         office = new Room("in the computing admin office");
+        transporter = new Room("in the transporter room");
+        
+        array_Rooms.add(outside);
+        array_Rooms.add(theater);
+        array_Rooms.add(pub);
+        array_Rooms.add(lab);
+        array_Rooms.add(office);
         
         outside = addItemsToRoom(outside, oItem);
         theater = addItemsToRoom(theater, tItem);
@@ -64,25 +94,48 @@ public class Game
         outside.setExit("east", theater);
         outside.setExit("south", lab);
         outside.setExit("west", pub);
+        outside.setExit("north", transporter);
 
         theater.setExit("west", outside);
 
         pub.setExit("east", outside);
+        pub.setExit("north", transporter);
 
         lab.setExit("north", outside);
         lab.setExit("east", office);
 
         office.setExit("west", lab);
+        
+        randomRoom = (int) (Math.random() * array_Rooms.size()); 
+        
+        transporter.setExit ("north", array_Rooms.get (randomRoom)); 
+        array_Rooms.remove (randomRoom);
+        
+        randomRoom = (int) (Math.random() * array_Rooms.size()); 
+        
+        transporter.setExit ("south",array_Rooms.get (randomRoom)); 
+        array_Rooms.remove (randomRoom);
+        
+        randomRoom = (int) (Math.random() * array_Rooms.size()); 
+        
+        transporter.setExit ("east",array_Rooms.get (randomRoom)); 
+        array_Rooms.remove (randomRoom);
+        
+        randomRoom = (int) (Math.random() * array_Rooms.size()); 
+        
+        transporter.setExit("west",array_Rooms.get (randomRoom)); 
+        array_Rooms.remove (randomRoom);
 
-        currentRoom = outside;  // start game outside
+        player.setCurRoom(outside);  // start game outside
         
     }
 
     /**
-     *  Main play routine.  Loops until end of play.
+     *  Main play routine.  Untill counter runs out of time.
      */
     public void play() 
-    {            
+    {        
+        createPlayer(); 
         printWelcome();
 
         // Enter the main command loop.  Here we repeatedly read commands and
@@ -90,8 +143,16 @@ public class Game
                 
         boolean finished = false;
         while (! finished) {
+            if(counter>10)
+            {
+                System.out.println("Sorry your time is up");
+            }
+            else
+            {
             Command command = parser.getCommand();
             finished = processCommand(command);
+            counter++;
+            }
         }
         System.out.println("Thank you for playing.  Good bye.");
     }
@@ -106,6 +167,9 @@ public class Game
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
         System.out.println();
+        createPlayer();
+        System.out.println("Hi player"+ player.getPlayerName());
+        System.out.println(player.getPlayerDes());
         System.out.println(currentRoom.getLongDescription());
     }
 
@@ -148,6 +212,23 @@ public class Game
             case BACK:
                 backRoom(); 
                 break;
+            
+            case TAKE:
+                pickupItemFromRoom(command);
+                break;
+                
+            case DROP:
+                dropItemInHand(command); 
+                break;
+                
+            case ITEM:
+                player.printItem();
+                break;
+            
+            case EATCOOKIE:
+                player.eatCookie();
+                break;
+            
                 
         }
         return wantToQuit;
@@ -190,9 +271,24 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
-            push(currentRoom);
-            currentRoom = nextRoom;
-            System.out.println(currentRoom.getLongDescription());
+            if (nextRoom.getShortDescription().contains("transporter room"))
+            {
+                System.out.println("You are " + " in the Transporter Room"); 
+                System.out.print("So, you are being" +" transported"); 
+                direction = directions[(int)(Math.random() * directions.length)]; 
+                nextRoom = nextRoom.getExit (direction);
+            }
+                if (nextRoom == null)
+                {
+                System.out.println("There is no " +"door!");
+                }   
+                else
+                {
+                currentRoom = nextRoom; System.out.println(
+                currentRoom.getLongDescription());
+                }
+            player.setPlayerEntrance(nextRoom);
+            System.out.println(player.getPlayerDes());
         }
     }
 
@@ -212,12 +308,17 @@ public class Game
         }
     }
     
-    // prints the room decrption
+   /**
+     * prints the room decrption
+     */
     private void lookAround()
     {
         System.out.println(currentRoom.getLongDescription());
     }
     
+    /**
+     * Exectues the eat command 
+     */
     private void eatSomething()
     {
         System.out.println("You have eaten and not hungry anymore.");
@@ -240,11 +341,7 @@ public class Game
      */
     private void backRoom()
     {
-        currentRoom = pop();
-        if(currentRoom != null)
-        {
-            System.out.println(currentRoom.getLongDescription());
-        }   
+        player.movePlayerBack();
     }
     
      /** 
@@ -276,5 +373,36 @@ public class Game
             return roomStack[top--];
         }
     }
+    
+     /**
+     * executes the pick up item command and saves its name
+     */
+    private void pickupItemFromRoom(Command command)
+    {
+        if (!command.hasSecondWord())
+        {
+            System.out.println("There is not item"+ " specified...");
+            return;
+        }
+        String itemName = command.getSecondWord();
+        player.pickupItem(itemName);
+    }
+    
+     /**
+     * Executes the drop item and stores it in itemName
+     */
+    private void dropItemInHand(Command command)
+    {
+        if (!command.hasSecondWord())
+        {
+            System.out.println("There is not item"+ "specified..."); 
+            return;
+        }
+        String itemName = command.getSecondWord();
+        player.dropItem (itemName);
+    }
+   
+    
+  
     
 }
